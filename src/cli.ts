@@ -283,7 +283,7 @@ async function handleSearch(account: string, args: string[]) {
 	} else {
 		console.log("ID\tDATE\tFROM\tSUBJECT\tLABELS");
 		for (const t of results.threads) {
-			const msg = t.messages[0];
+			const msg = t.messages.at(-1);
 			const date = msg?.date ? new Date(msg.date).toISOString().slice(0, 16).replace("T", " ") : "";
 			const from = msg?.from?.replace(/\t/g, " ") || "";
 			const subject = msg?.subject?.replace(/\t/g, " ") || "(no subject)";
