@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Added global `--json` flag for machine-readable output
+  - `accounts list --json` returns JSON array of email addresses
+  - `search --json` returns full `ThreadSearchResult` including `hasAttachments` per message
+  - `thread --json` returns raw Gmail API payload (includes HTML body parts for processing)
+  - `thread --download --json` returns downloaded attachment info as JSON
+
 ## 0.1.0
 
 Initial release.

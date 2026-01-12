@@ -6,6 +6,9 @@ import { GmailService } from "./gmail-service.js";
 
 const service = new GmailService();
 
+// Global JSON output flag
+let jsonOutput = false;
+
 function usage(): never {
 	console.log(`gmcli - Gmail CLI
 
@@ -13,6 +16,10 @@ USAGE
 
   gmcli accounts <action>                    Account management
   gmcli <email> <command> [options]          Gmail operations
+
+GLOBAL OPTIONS
+
+  --json                                     Output JSON instead of human-readable format
 
 ACCOUNT COMMANDS
 
@@ -116,8 +123,12 @@ async function main() {
 		usage();
 	}
 
-	const first = args[0];
-	const rest = args.slice(1);
+	// Check for global --json flag
+	jsonOutput = args.includes("--json");
+	const filteredArgs = args.filter((a) => a !== "--json");
+
+	const first = filteredArgs[0];
+	const rest = filteredArgs.slice(1);
 
 	try {
 		// Handle 'accounts' command separately (no email required)
@@ -169,7 +180,9 @@ async function handleAccounts(args: string[]) {
 	switch (action) {
 		case "list": {
 			const accounts = service.listAccounts();
-			if (accounts.length === 0) {
+			if (jsonOutput) {
+				console.log(JSON.stringify(accounts.map((a) => a.email)));
+			} else if (accounts.length === 0) {
 				console.log("No accounts configured");
 			} else {
 				for (const a of accounts) {
@@ -225,6 +238,12 @@ async function handleSearch(account: string, args: string[]) {
 	if (!query) error("Usage: <email> search <query>");
 
 	const results = await service.searchThreads(account, query, Number(values.max) || 10, values.page);
+
+	if (jsonOutput) {
+		console.log(JSON.stringify(results));
+		return;
+	}
+
 	const { idToName } = await service.getLabelMap(account);
 
 	if (results.threads.length === 0) {
@@ -253,6 +272,11 @@ async function handleThread(account: string, args: string[]) {
 	if (!threadId) error("Usage: <email> thread <threadId>");
 
 	const result = await service.getThread(account, threadId, download);
+
+	if (jsonOutput) {
+		console.log(JSON.stringify(result));
+		return;
+	}
 
 	if (download) {
 		const attachments = result as any[];
