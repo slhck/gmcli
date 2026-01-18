@@ -367,9 +367,30 @@ export class GmailService {
 
 		// If replying to a specific message, fetch its headers
 		if (options.replyToMessageId) {
+			let messageIdToFetch = options.replyToMessageId;
+
+			// Try to get as a message first; if that fails, treat as thread ID
+			try {
+				await gmail.users.messages.get({
+					userId: "me",
+					id: messageIdToFetch,
+					format: "minimal",
+				});
+			} catch {
+				// Probably a thread ID - get the thread and use the last message
+				const thread = await gmail.users.threads.get({
+					userId: "me",
+					id: options.replyToMessageId,
+					format: "minimal",
+				});
+				if (thread.data.messages && thread.data.messages.length > 0) {
+					messageIdToFetch = thread.data.messages[thread.data.messages.length - 1].id!;
+				}
+			}
+
 			const msg = await gmail.users.messages.get({
 				userId: "me",
-				id: options.replyToMessageId,
+				id: messageIdToFetch,
 				format: "metadata",
 				metadataHeaders: ["Message-ID", "References"],
 			});
@@ -504,7 +525,8 @@ export class GmailService {
 			userId: "me",
 			requestBody: { id: draftId },
 		});
-		return response.data.message!;
+		// Gmail API returns the sent Message directly in response.data
+		return response.data;
 	}
 
 	async sendMessage(
@@ -522,9 +544,30 @@ export class GmailService {
 
 		// If replying to a specific message, fetch its headers
 		if (options.replyToMessageId) {
+			let messageIdToFetch = options.replyToMessageId;
+
+			// Try to get as a message first; if that fails, treat as thread ID
+			try {
+				await gmail.users.messages.get({
+					userId: "me",
+					id: messageIdToFetch,
+					format: "minimal",
+				});
+			} catch {
+				// Probably a thread ID - get the thread and use the last message
+				const thread = await gmail.users.threads.get({
+					userId: "me",
+					id: options.replyToMessageId,
+					format: "minimal",
+				});
+				if (thread.data.messages && thread.data.messages.length > 0) {
+					messageIdToFetch = thread.data.messages[thread.data.messages.length - 1].id!;
+				}
+			}
+
 			const msg = await gmail.users.messages.get({
 				userId: "me",
-				id: options.replyToMessageId,
+				id: messageIdToFetch,
 				format: "metadata",
 				metadataHeaders: ["Message-ID", "References"],
 			});

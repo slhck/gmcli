@@ -2,6 +2,10 @@
 	"name": "@mariozechner/gmcli",
 	"version": "0.2.0",
 	"description": "Minimal Gmail CLI",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/slhck/gmcli.git"
+	},
 	"type": "module",
 	"bin": {
 		"gmcli": "dist/cli.js"
