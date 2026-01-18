@@ -13,12 +13,26 @@ export class AccountStorage {
 
 	constructor() {
 		this.ensureConfigDir();
+		this.fixPermissions();
 		this.loadAccounts();
 	}
 
 	private ensureConfigDir(): void {
 		if (!fs.existsSync(CONFIG_DIR)) {
-			fs.mkdirSync(CONFIG_DIR, { recursive: true });
+			fs.mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 });
+		}
+	}
+
+	private fixPermissions(): void {
+		// Fix directory permissions
+		if (fs.existsSync(CONFIG_DIR)) {
+			fs.chmodSync(CONFIG_DIR, 0o700);
+		}
+		// Fix file permissions
+		for (const file of [ACCOUNTS_FILE, CREDENTIALS_FILE, DEFAULT_FILE]) {
+			if (fs.existsSync(file)) {
+				fs.chmodSync(file, 0o600);
+			}
 		}
 	}
 
@@ -36,7 +50,7 @@ export class AccountStorage {
 	}
 
 	private saveAccounts(): void {
-		fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(Array.from(this.accounts.values()), null, 2));
+		fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(Array.from(this.accounts.values()), null, 2), { mode: 0o600 });
 	}
 
 	addAccount(account: EmailAccount): void {
@@ -63,7 +77,7 @@ export class AccountStorage {
 	}
 
 	setCredentials(clientId: string, clientSecret: string): void {
-		fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify({ clientId, clientSecret }, null, 2));
+		fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify({ clientId, clientSecret }, null, 2), { mode: 0o600 });
 	}
 
 	getCredentials(): { clientId: string; clientSecret: string } | null {
@@ -76,7 +90,7 @@ export class AccountStorage {
 	}
 
 	setDefaultEmail(email: string): void {
-		fs.writeFileSync(DEFAULT_FILE, JSON.stringify({ email }, null, 2));
+		fs.writeFileSync(DEFAULT_FILE, JSON.stringify({ email }, null, 2), { mode: 0o600 });
 	}
 
 	getDefaultEmail(): string | null {
