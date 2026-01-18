@@ -8,10 +8,14 @@
   - `search --json` returns full `ThreadSearchResult` including `hasAttachments` per message
   - `thread --json` returns raw Gmail API payload (includes HTML body parts for processing)
   - `thread --download --json` returns downloaded attachment info as JSON
+- `setdefault` command to set a default account, allowing commands without email prefix
+- Reply all (`--all`) and no-quote (`--no-quote`) options for `drafts create` and `send`
+- Auto-fill To/Subject when using `--reply-to`
 
 ### Fixed
 - `--reply-to` now accepts both thread IDs and message IDs. Previously it only worked with message IDs, but `search` returns thread IDs. Now automatically detects thread IDs and fetches the last message in the thread for proper reply threading.
 - `drafts send` no longer crashes with "Cannot read property 'id' of undefined". Fixed response handling from Gmail API.
+- Search FROM column now shows latest message sender instead of thread originator
 
 ## 0.1.0
 
