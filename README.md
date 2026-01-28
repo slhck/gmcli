@@ -2,12 +2,16 @@
 
 Minimal Gmail CLI for searching, reading threads, managing labels, drafts, and sending emails.
 
-> **Fork Notice:** This is a fork of [@mariozechner/gmcli](https://github.com/badlogic/gmcli) by Mario Zechner with bug fixes for `--reply-to` thread ID handling and `drafts send` crash. See [CHANGELOG.md](CHANGELOG.md) for details.
+> **Fork Notice:** This is a fork of [@mariozechner/gmcli](https://github.com/badlogic/gmcli) by Mario Zechner. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## Install
 
 ```bash
-npm install -g @willtmc/gmcli
+git clone https://github.com/slhck/gmcli.git
+cd gmcli
+npm install
+npm run build
+npm link
 ```
 
 ## Setup
@@ -199,16 +203,6 @@ All data is stored in `~/.gmcli/`:
 npm install
 npm run build
 npm run check
-```
-
-## Publishing
-
-```bash
-# Update version in package.json and CHANGELOG.md
-npm run build
-npm publish --access public
-git tag v<version>
-git push --tags
 ```
 
 ## License
