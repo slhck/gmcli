@@ -11,7 +11,7 @@ git clone https://github.com/slhck/gmcli.git
 cd gmcli
 npm install
 npm run build
-npm link
+npm i -g .
 ```
 
 ## Setup
