@@ -1,5 +1,7 @@
 # gmcli
 
+# :warning: Deprecated. Use [`@googleworkspace/cli`](https://github.com/googleworkspace/cli/) instead.
+
 Minimal Gmail CLI for searching, reading threads, managing labels, drafts, and sending emails.
 
 > **Fork Notice:** This is a fork of [@mariozechner/gmcli](https://github.com/badlogic/gmcli) by Mario Zechner. See [CHANGELOG.md](CHANGELOG.md) for details.
